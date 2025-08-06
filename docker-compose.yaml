@@ -20,13 +20,17 @@ services:
   storage-service:
     build: 
       context: ./storage-service
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "8001:8001"
     environment:
-      - POSTGRES_DB=commerce_db
+      - POSTGRES_DB=files_db
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
+    volumes:
+      - ./storage-service:/app
+    env_file:
+      - ./storage-service/.env
     depends_on:
       - database
 
