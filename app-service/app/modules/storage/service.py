@@ -20,5 +20,5 @@ def generate_presigned_url(file_meta: FileMeta) -> PresignedUrlResponse:
         "mime_type": file_meta.mime_type,
     })
 
-    upload_url = f"{settings.storage_service_url}/upload?token={token}"
+    upload_url = f"{settings.storage_service_url}/storage?token={token}"
     return PresignedUrlResponse(upload_url=upload_url)

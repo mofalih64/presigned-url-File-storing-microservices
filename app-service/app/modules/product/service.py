@@ -19,7 +19,7 @@ async def create_product(
 async def get_products(db: AsyncSession)->list[ProductSchema]:
     products=await db.execute(select(Product).order_by(Product.id.desc()))
     products=products.scalars().all()
-    #  add image data for each product
+    #  add image data for each product, should groupd the products ids in array and call the storage service once
     for product in products:
         product.image_data = await check_image_id(product.image_id,False)
 

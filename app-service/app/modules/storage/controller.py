@@ -4,6 +4,6 @@ from app.modules.storage.service import generate_presigned_url
 
 router = APIRouter()
 
-@router.post("/get-upload-url", response_model=PresignedUrlResponse)
+@router.post("/upload-url", response_model=PresignedUrlResponse)
 async def get_upload_url(file_meta: FileMeta):
     return generate_presigned_url(file_meta)
