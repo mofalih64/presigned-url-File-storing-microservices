@@ -12,8 +12,6 @@ from sqlalchemy import select
 async def handle_file_upload(token: str, file: UploadFile, db: AsyncSession):
     # Decode and validate token
     meta = decode_token(token)
-    print(meta)
-    print(file)
 
     # Validate uploaded file matches the token claims
     if file.content_type != meta.get("mime_type"):
@@ -57,10 +55,7 @@ async def handle_file_upload(token: str, file: UploadFile, db: AsyncSession):
 
 async def get_image(file_id: str, db: AsyncSession):
     result = await db.execute(select(FileModel).where(FileModel.id == file_id))
-    print(result)
-    print(file_id)
     file = result.scalars().first()
-    print(file)
 
     if not file:
         raise not_found("File not found")
