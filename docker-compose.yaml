@@ -1,38 +1,56 @@
-version: '3.8'
 services:
   app-service:
     build: 
-    context: ./app-service
-    dockerfile: Dockerfile
+      context: ./app-service
+      dockerfile: Dockerfile.dev
     ports:
       - "8000:8000"
     environment:
       - STORAGE_SERVICE_URL=http://storage-service:8001
-      - SECRET_KEY=${SECRET_KEY}
-      - POSTGRES_DB=app_db
+      - POSTGRES_DB=commerce_db
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-
+    volumes:
+      - ./app-service:/app
+    env_file:
+      - ./app-service/.env
     depends_on:
       - database
   
   storage-service:
     build: 
-    context: ./storage-service
-    dockerfile: Dockerfile
+      context: ./storage-service
+      dockerfile: Dockerfile
     ports:
       - "8001:8001"
     environment:
-      - POSTGRES_DB=app_db
+      - POSTGRES_DB=commerce_db
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - database
 
   database:
-    image: postgres:15
+    image: postgres:16
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d   # create multiple databases
+      - pg_data:/var/lib/postgresql/data              
     environment:
-      - POSTGRES_DB=app_db
+      - POSTGRES_DB=commerce_db
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - '4080:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: com@file.com
+      PGADMIN_DEFAULT_PASSWORD: fi123
+    depends_on:
+      - database
+
+volumes:
+  pg_data:
